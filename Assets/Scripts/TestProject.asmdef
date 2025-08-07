@@ -1,0 +1,25 @@
+{
+    "name": "TestProject",
+    "rootNamespace": "TestProject",
+    "references": [
+        "Unity.Collections",
+        "Unity.Mathematics",
+        "Unity.Entities",
+        "Unity.Burst",
+        "Unity.Entities.Hybrid",
+        "Unity.Transforms",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.Cinemachine",
+        "Unity.Entities.Graphics",
+        "NativeFlowField"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
