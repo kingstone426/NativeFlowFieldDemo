@@ -987,11 +987,11 @@ MonoBehaviour:
   FlowTerrain: {fileID: 1606032709}
   HeatMapRenderer: {fileID: 1606032712}
   BakeOptions:
-    Iterations: 500
+    Iterations: 1000
     IterationsPerFrame: 100
     DiagonalMovement: 1
-    ComputeQueueType: 0
-  AgentSpawnCount: 200
+    ComputeQueueType: 1
+  AgentSpawnCount: 0
 --- !u!4 &1606032707
 Transform:
   m_ObjectHideFlags: 0
