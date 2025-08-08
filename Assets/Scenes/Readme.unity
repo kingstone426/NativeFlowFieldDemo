@@ -433,6 +433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d3ab7cdfc04ca19cb58403616fe7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WalkerPrefab: {fileID: 3945592313228433467, guid: 68e2dd3ea03d66147b50089e3bc06a7e, type: 3}
+  GenerateWalkers: 1
   Delay: 0.3
   MinValue: -3
   MaxValue: 15
@@ -468,7 +470,7 @@ MonoBehaviour:
   BakeOptions:
     Iterations: 0
     IterationsPerFrame: 0
-    DiagonalMovement: 1
+    DiagonalMovement: 0
     ComputeQueueType: 0
   AgentSpawnCount: 0
 --- !u!4 &935163081
