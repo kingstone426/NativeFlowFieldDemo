@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WalkerPrefab: {fileID: 3945592313228433467, guid: 68e2dd3ea03d66147b50089e3bc06a7e, type: 3}
-  GenerateWalkers: 1
+  GenerateWalkers: 0
   Delay: 0.3
   MinValue: -3
   MaxValue: 15
@@ -468,7 +468,7 @@ MonoBehaviour:
   FlowTerrain: {fileID: 935163079}
   HeatMapRenderer: {fileID: 935163077}
   BakeOptions:
-    Iterations: 0
+    Iterations: 5
     IterationsPerFrame: 0
     DiagonalMovement: 0
     ComputeQueueType: 0
