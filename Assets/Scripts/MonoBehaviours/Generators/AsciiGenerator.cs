@@ -23,7 +23,7 @@ public class AsciiGenerator : Generator
         {
             for (var x=0; x<asciiWidth; x++)
             {
-                var dst = x+(width-asciiWidth)/2 + (asciiHeight-y+(height-asciiHeight)/2) * width;
+                var dst = x+(width-asciiWidth)/2 + (asciiHeight-y-1+(height-asciiHeight)/2) * width;
 
                 var c = lines[y][x];
 
