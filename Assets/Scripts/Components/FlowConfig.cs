@@ -11,10 +11,11 @@ public class FlowConfig : IComponentData
     public NativeArray<float> Terrain;
     public int AgentSpawnCount;
     public int WalkerSpawnCount;
+    public float WalkerVelocitySmoothingFactor;
 
     public FlowConfig() {}
 
-    public FlowConfig(int width, int height, NativeArray<float> inputField, NativeArray<float> terrain, BakeOptions bakeOptions, int agentSpawnCount, int walkerSpawnCount)
+    public FlowConfig(int width, int height, NativeArray<float> inputField, NativeArray<float> terrain, BakeOptions bakeOptions, int agentSpawnCount, int walkerSpawnCount, float walkerVelocitySmoothingFactor) : this()
     {
         Width = width;
         Height = height;
@@ -23,5 +24,6 @@ public class FlowConfig : IComponentData
         BakeOptions = bakeOptions;
         AgentSpawnCount = agentSpawnCount;
         WalkerSpawnCount = walkerSpawnCount;
+        WalkerVelocitySmoothingFactor = walkerVelocitySmoothingFactor;
     }
 }

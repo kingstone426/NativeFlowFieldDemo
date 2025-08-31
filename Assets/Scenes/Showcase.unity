@@ -458,7 +458,8 @@ MonoBehaviour:
     Mode: 0
     FleeFactor: -1.2
   AgentSpawnCount: 0
-  WalkerSpawnCount: 4
+  WalkerSpawnCount: 20
+  WalkerVelocitySmoothingFactor: 0.1
 --- !u!4 &935163081
 Transform:
   m_ObjectHideFlags: 0

@@ -17,6 +17,7 @@ public partial class WalkerSpawnerSystem : SystemBase
     private EntityQuery flowConfigQuery;
     private Random rand;
     private double nextSpawnTime;
+    private PotentialFieldSystem potentialFieldSystem;
 
     protected override void OnCreate()
     {
@@ -41,6 +42,8 @@ public partial class WalkerSpawnerSystem : SystemBase
         RequireForUpdate(flowConfigQuery);
 
         rand = new Random(6789);   // TODO: Seed
+
+        potentialFieldSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<PotentialFieldSystem>();
     }
 
     protected override void OnStartRunning()
@@ -81,10 +84,12 @@ public partial class WalkerSpawnerSystem : SystemBase
 
         var commandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
+        var potentialField = potentialFieldSystem.PotentialField.AsReadOnly();
+
         for (var i = 0; i < spawnCount; i++)
         {
             var entity = commandBuffer.Instantiate(prefab);
-            GetRandomFreeBorderTile(ref obstacleMap, ref size, ref rand, out var tile);
+            GetRandomFreeBorderTile(ref obstacleMap, ref potentialField, ref size, ref rand, out var tile);
             commandBuffer.SetComponent(entity, new LocalTransform
             {
                 Position = tile.x0y(),
@@ -103,7 +108,7 @@ public partial class WalkerSpawnerSystem : SystemBase
 
 
     [BurstCompile]
-    private static void GetRandomFreeBorderTile(ref NativeArray<float>.ReadOnly obstacleMap, ref float2 size, ref Random rand, out int2 tile)
+    private static void GetRandomFreeBorderTile(ref NativeArray<float>.ReadOnly obstacleMap, ref NativeParallelMultiHashMap<int2, Entity>.ReadOnly potentialField, ref float2 size, ref Random rand, out int2 tile)
     {
         var panic = 0;
         while (panic++ < 1000)
@@ -120,10 +125,17 @@ public partial class WalkerSpawnerSystem : SystemBase
             }
             tile = (int2)math.floor(position);
             var cost = obstacleMap[tile.x + tile.y * (int)size.x];
-            if (cost < NativeFlowField.ObstacleCell)
+            if (cost >= NativeFlowField.ObstacleCell)
             {
-                return;
+                continue;
             }
+
+            if (potentialField.ContainsKey(tile))
+            {
+                continue;
+            }
+
+            return;
         }
 
         throw new Exception("Could not find free border tile");

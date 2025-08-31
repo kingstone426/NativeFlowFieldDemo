@@ -13,6 +13,11 @@ public partial class WalkerSystem : SystemBase
     private const float Speed = 1f;
     private NativeList<Entity> walkersToRemove;
     private EntityQuery flowFieldQuery;
+    private PotentialFieldSystem potentialFieldSystem;
+
+
+    private static readonly int2 Right = new(1, 0);
+    private static readonly int2 Up = new (0, 1);
 
     private static int Flatten(int2 pos, int width) => pos.y * width + pos.x;
     private static int2 UnFlatten(int index, int width) => new(index % width, index / width);
@@ -26,6 +31,8 @@ public partial class WalkerSystem : SystemBase
         flowFieldQuery = new EntityQueryBuilder(Allocator.Temp).
             WithAll<NativeFlowField, FlowConfig>().
             Build(this);
+
+        potentialFieldSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<PotentialFieldSystem>();
     }
 
     protected override void OnDestroy()
@@ -42,6 +49,7 @@ public partial class WalkerSystem : SystemBase
         foreach (var flowFieldEntity in entities)
         {
             var nativeFlowField = EntityManager.GetComponentData<NativeFlowField>(flowFieldEntity);
+            var flowConfig = EntityManager.GetComponentData<FlowConfig>(flowFieldEntity);
 
             if (nativeFlowField.NextIndices.IsCreated == false)
             {
@@ -63,10 +71,12 @@ public partial class WalkerSystem : SystemBase
             new WalkJob
             {
                 FlowField = (int*)nativeFlowField.NextIndices.GetUnsafeReadOnlyPtr(),
+                PotentialField = potentialFieldSystem.PotentialField,
                 WalkersToRemove = walkersToRemove.AsParallelWriter(),
                 Width = nativeFlowField.Width,
                 Height = nativeFlowField.Height,
                 DeltaTime = SystemAPI.Time.DeltaTime,
+                WalkerVelocitySmoothingFactor = flowConfig.WalkerVelocitySmoothingFactor,
             }.ScheduleParallel(query, Dependency).Complete();
 
             if (walkersToRemove.Length == 0)
@@ -89,12 +99,14 @@ public partial class WalkerSystem : SystemBase
     private unsafe partial struct WalkJob : IJobEntity
     {
         [ReadOnly][NativeDisableUnsafePtrRestriction] public int* FlowField;
+        [ReadOnly] public NativeParallelMultiHashMap<int2, Entity> PotentialField;
         public NativeList<Entity>.ParallelWriter WalkersToRemove;
         public int Width;
         public int Height;
         public float DeltaTime;
+        public float WalkerVelocitySmoothingFactor;
 
-        private void Execute(Entity entity, ref LocalTransform transform, in WalkerComponent walker)
+        private void Execute(Entity entity, ref LocalTransform transform, ref WalkerComponent walker)
         {
             var pos = transform.Position.xz;
 
@@ -109,8 +121,33 @@ public partial class WalkerSystem : SystemBase
                 WalkersToRemove.AddNoResize(entity);
                 return;
             }
+
             var direction = math.normalize(targetTile - pos);
-            pos += direction * Speed * DeltaTime;
+            var crowdPos = pos + 1 * direction;
+            if (crowdPos.x >= Width || crowdPos.x < 0 ||
+                crowdPos.y >= Height || crowdPos.y < 0)
+            {
+                return;
+            }
+
+            var i = (int2)math.floor(crowdPos);
+            var f = crowdPos - i;
+
+            var block = new float2x2(
+                PotentialField.CountValuesForKey(i), PotentialField.CountValuesForKey(i + Right),
+                PotentialField.CountValuesForKey(i + Up), PotentialField.CountValuesForKey(i + Right + Up)
+            );
+            var crowd =  block.c0.x * (1 - f.x) * (1 - f.y) +
+                         block.c1.x * f.x       * (1 - f.y) +
+                         block.c0.y * (1 - f.x) * f.y +
+                         block.c1.y * f.x       * f.y;
+
+            var crowdSpeed = crowd > 1 ? Speed / crowd : Speed;
+            var candidateVelocity = direction * crowdSpeed;
+
+            walker.Velocity = math.lerp(walker.Velocity, candidateVelocity, WalkerVelocitySmoothingFactor);
+
+            pos += walker.Velocity * DeltaTime;
             transform.Position = pos.x0y();
         }
     }
@@ -121,7 +158,7 @@ public partial class WalkerSystem : SystemBase
         var target = flowField[Flatten(currentTile, width)];
         if (target < 0)
         {
-            return currentTile;   // Nowhere to go
+            return currentTile;
         }
 
         return UnFlatten(target, width);

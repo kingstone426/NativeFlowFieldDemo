@@ -12,6 +12,7 @@ public class FlowFieldConfig : MonoBehaviour
     public BakeOptions BakeOptions = BakeOptions.Default;
     public int AgentSpawnCount;
     public int WalkerSpawnCount;
+    public float WalkerVelocitySmoothingFactor = 1f;
     public NativeFlowField FlowField { get; private set; }
 
     private NativeArray<float> inputField;
@@ -70,7 +71,8 @@ public class FlowFieldConfig : MonoBehaviour
             terrain: FlowTerrain.Terrain,
             bakeOptions: BakeOptions,
             agentSpawnCount: AgentSpawnCount,
-            walkerSpawnCount: WalkerSpawnCount
+            walkerSpawnCount: WalkerSpawnCount,
+            walkerVelocitySmoothingFactor: WalkerVelocitySmoothingFactor
         );
 }
 
