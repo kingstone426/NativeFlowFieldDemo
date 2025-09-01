@@ -452,7 +452,7 @@ MonoBehaviour:
   FlowTerrain: {fileID: 935163079}
   HeatMapRenderer: {fileID: 935163077}
   BakeOptions:
-    Iterations: 50
+    Iterations: 100
     IterationsPerFrame: 0
     DiagonalMovement: 1
     ComputeQueueType: 0

@@ -31,17 +31,8 @@ public partial class BakeSystem : SystemBase
             var flowField = EntityManager.GetComponentData<NativeFlowField>(entity);
             var flowConfig = EntityManager.GetComponentData<FlowConfig>(entity);
 
-            // Recreate input field using tile map and target (coin) entities
-            flowConfig.InputField.CopyFrom(flowConfig.Terrain);
-            new PlotCoinPositions
-            {
-                Width = flowConfig.Width,
-                Height = flowConfig.Height,
-                Output = flowConfig.InputField
-            }.ScheduleParallel(Dependency).Complete();
-
             // Bake flow field
-            flowField.Bake(flowConfig.InputField, flowConfig.BakeOptions);
+            flowField.Bake(flowConfig.Terrain, flowConfig.BakeOptions);
         }
     }
 

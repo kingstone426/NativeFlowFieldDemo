@@ -15,7 +15,6 @@ public class FlowFieldConfig : MonoBehaviour
     public float WalkerVelocitySmoothingFactor = 1f;
     public NativeFlowField FlowField { get; private set; }
 
-    private NativeArray<float> inputField;
     private Entity entity;
     private EntityManager entityManager;
 
@@ -27,7 +26,6 @@ public class FlowFieldConfig : MonoBehaviour
     private void Awake()
     {
         FlowField = new NativeFlowField(FlowTerrain.Width, FlowTerrain.Height, UseHeatMap);
-        inputField = new NativeArray<float>(FlowTerrain.Width * FlowTerrain.Height, Allocator.Persistent);
 
         var flowConfig = GetConfig();
 
@@ -48,7 +46,6 @@ public class FlowFieldConfig : MonoBehaviour
     private void OnDestroy()
     {
         FlowField.Dispose();
-        inputField.Dispose();
     }
 
     private void OnValidate() => UpdateConfig();
@@ -67,7 +64,6 @@ public class FlowFieldConfig : MonoBehaviour
         new(
             width: FlowTerrain.Width,
             height: FlowTerrain.Height,
-            inputField: inputField,
             terrain: FlowTerrain.Terrain,
             bakeOptions: BakeOptions,
             agentSpawnCount: AgentSpawnCount,
