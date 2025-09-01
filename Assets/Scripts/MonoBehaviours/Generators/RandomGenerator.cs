@@ -1,9 +1,9 @@
 ﻿using FlowFieldAI;
 using Unity.Collections;
-using UnityEngine;
 
 public class RandomGenerator : Generator
 {
+    public bool BorderWall = true;
     public float ObstacleRate = 0.4f;
 
     public override void Generate(NativeArray<float> inputField, int width, int height, string seed)
@@ -15,7 +15,7 @@ public class RandomGenerator : Generator
             for (var x = 0; x < width; x++)
             {
                 var index = x + y * width;
-                if (y==0 || x==0 || y==height-1 || x==width-1)
+                if (BorderWall && (y==0 || x==0 || y==height-1 || x==width-1))
                 {
                     inputField[index] = NativeFlowField.ObstacleCell; // Wall
                 }

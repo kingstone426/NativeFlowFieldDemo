@@ -72,7 +72,7 @@ public partial class WalkerSpawnerSystem : SystemBase
 
             SpawnWalkers(flowConfig, flowFieldEntity, 1);
 
-            nextSpawnTime = SystemAPI.Time.ElapsedTime + rand.NextFloat(0, 2f/spawnCount);
+            nextSpawnTime = SystemAPI.Time.ElapsedTime + rand.NextFloat(0, 20f/spawnCount);
         }
     }
 

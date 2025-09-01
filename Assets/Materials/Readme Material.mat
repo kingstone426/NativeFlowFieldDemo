@@ -100,7 +100,7 @@ Material:
     - FlowSpeed: 0
     - Gradient: 0
     - GradientMode: 1
-    - MaxCost: 6.5
+    - MaxCost: 75
     - MinCost: 0
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0

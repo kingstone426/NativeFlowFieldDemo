@@ -15,7 +15,7 @@ public partial class PotentialFieldSystem : SystemBase
     {
         base.OnCreate();
 
-        potentialField = new NativeParallelMultiHashMap<int2, Entity>(1000, Allocator.Persistent);
+        potentialField = new NativeParallelMultiHashMap<int2, Entity>(10000, Allocator.Persistent);
     }
 
     protected override void OnDestroy()

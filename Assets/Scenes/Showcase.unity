@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 935163081}
   - component: {fileID: 935163080}
   - component: {fileID: 935163079}
+  - component: {fileID: 935163083}
   - component: {fileID: 935163082}
   - component: {fileID: 935163077}
   - component: {fileID: 935163076}
@@ -433,8 +434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffd574904e424c098c5961509792aa47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 7
-  Height: 7
+  Width: 100
+  Height: 100
   Seed: abcd
 --- !u!114 &935163080
 MonoBehaviour:
@@ -451,14 +452,14 @@ MonoBehaviour:
   FlowTerrain: {fileID: 935163079}
   HeatMapRenderer: {fileID: 935163077}
   BakeOptions:
-    Iterations: 5
+    Iterations: 50
     IterationsPerFrame: 0
-    DiagonalMovement: 0
+    DiagonalMovement: 1
     ComputeQueueType: 0
     Mode: 0
     FleeFactor: -1.2
   AgentSpawnCount: 0
-  WalkerSpawnCount: 20
+  WalkerSpawnCount: 4000
   WalkerVelocitySmoothingFactor: 0.1
 --- !u!4 &935163081
 Transform:
@@ -488,7 +489,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390ae06a027640be91096202a151e7e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ascii: "\u2588\u2591\u2591\u2591\u2591\u2591\u2588\n\u2591\u2588\u2588\u2591\u2588\u2588\u2591\n\u2591\u2588\u2591\u2591\u2591\u2588\u2591\n\u2591\u2591\u25910\u2591\u2591\u2591\n\u2591\u2588\u2591\u2591\u2591\u2588\u2591\n\u2591\u2588\u2588\u2591\u2588\u2588\u2591\n\u2588\u2591\u2591\u2591\u2591\u2591\u2588"
+  Ascii: '000
+
+    000
+
+    000'
+--- !u!114 &935163083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935163075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da2343ff551043e0b5c2ed611f383428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BorderWall: 0
+  ObstacleRate: 0
 --- !u!1 &1270812068
 GameObject:
   m_ObjectHideFlags: 0

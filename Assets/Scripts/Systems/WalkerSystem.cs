@@ -10,7 +10,7 @@ using Unity.Transforms;
 [BurstCompile]
 public partial class WalkerSystem : SystemBase
 {
-    private const float Speed = 1f;
+    private const float Speed = 5f;
     private NativeList<Entity> walkersToRemove;
     private EntityQuery flowFieldQuery;
     private PotentialFieldSystem potentialFieldSystem;
@@ -122,28 +122,33 @@ public partial class WalkerSystem : SystemBase
                 return;
             }
 
-            var direction = math.normalize(targetTile - pos);
-            var crowdPos = pos + 1 * direction;
-            if (crowdPos.x >= Width || crowdPos.x < 0 ||
-                crowdPos.y >= Height || crowdPos.y < 0)
+            var speed = Speed;
+            if (math.lengthsq(walker.Velocity)>0.001f )
             {
-                return;
+                var crowdPos = pos + math.normalize(walker.Velocity);
+                if (crowdPos.x >= Width || crowdPos.x < 0 ||
+                    crowdPos.y >= Height || crowdPos.y < 0)
+                {
+                    return;
+                }
+
+                var i = (int2)math.floor(crowdPos);
+                var f = crowdPos - i;
+
+                var block = new float2x2(
+                    PotentialField.CountValuesForKey(i), PotentialField.CountValuesForKey(i + Right),
+                    PotentialField.CountValuesForKey(i + Up), PotentialField.CountValuesForKey(i + Right + Up)
+                );
+                var crowd = block.c0.x * (1 - f.x) * (1 - f.y) +
+                            block.c1.x * f.x * (1 - f.y) +
+                            block.c0.y * (1 - f.x) * f.y +
+                            block.c1.y * f.x * f.y;
+
+                speed = crowd > 1 ? Speed / crowd : Speed;
             }
 
-            var i = (int2)math.floor(crowdPos);
-            var f = crowdPos - i;
-
-            var block = new float2x2(
-                PotentialField.CountValuesForKey(i), PotentialField.CountValuesForKey(i + Right),
-                PotentialField.CountValuesForKey(i + Up), PotentialField.CountValuesForKey(i + Right + Up)
-            );
-            var crowd =  block.c0.x * (1 - f.x) * (1 - f.y) +
-                         block.c1.x * f.x       * (1 - f.y) +
-                         block.c0.y * (1 - f.x) * f.y +
-                         block.c1.y * f.x       * f.y;
-
-            var crowdSpeed = crowd > 1 ? Speed / crowd : Speed;
-            var candidateVelocity = direction * crowdSpeed;
+            var direction = math.normalize(targetTile - pos);
+            var candidateVelocity = direction * speed;
 
             walker.Velocity = math.lerp(walker.Velocity, candidateVelocity, WalkerVelocitySmoothingFactor);
 
